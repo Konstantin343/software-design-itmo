@@ -1,6 +1,6 @@
 package ru.kkrukhmalev.vkapi.client
 
-import ru.kkrukhmalev.vkapi.http.UrlReader
+import ru.kkrukhmalev.vkapi.http.TextUrlReader
 import ru.kkrukhmalev.vkapi.posts.VkPost
 import ru.kkrukhmalev.vkapi.posts.VkPostsResponseParser
 import java.net.URL
@@ -22,7 +22,7 @@ open class VkApiClient(
         const val END_TIME = "end_time"
     }
     
-    private val urlReader = UrlReader()
+    private val urlReader = TextUrlReader()
     private val postResponseParser = VkPostsResponseParser()
 
     private val requiredParameters
@@ -48,7 +48,7 @@ open class VkApiClient(
             END_TIME to endTime
         )
         val url = createRequestUrl(NEWSFEED_SEARCH, parameters)
-        val response = urlReader.readAsText(url)
+        val response = urlReader.read(url)
         return postResponseParser.parseResponse(response)
     }
 }

@@ -15,7 +15,7 @@ import java.net.URL
 
 class UrlReaderWithStubServerTest {
     private val port = 32453
-    private val urlReader = UrlReader()
+    private val urlReader = TextUrlReader()
     
     private val url: URL
         get() = URL("http://localhost:$port/ping")
@@ -26,7 +26,7 @@ class UrlReaderWithStubServerTest {
             whenHttp(this)
                 .match(method(Method.GET), startsWithUri("/ping"))
                 .then(stringContent("pong  \n  pong"))
-            val result = urlReader.readAsText(url)
+            val result = urlReader.read(url)
             Assert.assertEquals(result, "pong  \n  pong\n")
         }
     }
@@ -38,7 +38,7 @@ class UrlReaderWithStubServerTest {
                 whenHttp(this)
                     .match(method(Method.GET), startsWithUri("/ping"))
                     .then(status(HttpStatus.NOT_FOUND_404))
-                urlReader.readAsText(url)
+                urlReader.read(url)
             }
         }
     }
