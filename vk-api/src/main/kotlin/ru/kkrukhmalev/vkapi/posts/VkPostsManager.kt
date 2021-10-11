@@ -6,7 +6,8 @@ class VkPostsManager(
     private val client: VkApiClient
 ) {
     fun getPostsStats(hashtag: String, hours: Int): List<Int> {
-        assert(hours in 1..24) { "hours must be between 1 and 24" }
+        if (hours !in 1..24)
+            throw IllegalArgumentException("hours must be between 1 and 24")
         
         val endTime = System.currentTimeMillis() / 1000
         val startTime = endTime - hours * 60 * 60
