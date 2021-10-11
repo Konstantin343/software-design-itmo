@@ -16,15 +16,18 @@ import java.net.URL
 class UrlReaderWithStubServerTest {
     private val port = 32453
     private val urlReader = UrlReader()
+    
+    private val url: URL
+        get() = URL("http://localhost:$port/ping")
 
     @Test
-    fun readAsText() {
-        withStubServer(port) { 
+    fun readAsTextMultiline() {
+        withStubServer(port) {
             whenHttp(this)
                 .match(method(Method.GET), startsWithUri("/ping"))
-                .then(stringContent("pong"))
-            val result = urlReader.readAsText(URL("http://localhost:$port/ping"))
-            Assert.assertEquals(result, "pong\n")
+                .then(stringContent("pong  \n  pong"))
+            val result = urlReader.readAsText(url)
+            Assert.assertEquals(result, "pong  \n  pong\n")
         }
     }
 
@@ -35,18 +38,18 @@ class UrlReaderWithStubServerTest {
                 whenHttp(this)
                     .match(method(Method.GET), startsWithUri("/ping"))
                     .then(status(HttpStatus.NOT_FOUND_404))
-                urlReader.readAsText(URL("http://localhost:$port/ping"))
+                urlReader.readAsText(url)
             }
         }
     }
 
     private fun withStubServer(@Suppress("SameParameterValue") port: Int, callback: StubServer.() -> Unit) {
-        var stubServer: StubServer? = null
+        val stubServer = StubServer(port)
         try {
-            stubServer = StubServer(port).run()
+            stubServer.run()
             stubServer.callback()
         } finally {
-            stubServer?.stop()
+            stubServer.stop()
         }
     }
 }

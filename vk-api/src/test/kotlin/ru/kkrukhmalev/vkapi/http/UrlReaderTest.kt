@@ -10,7 +10,7 @@ class UrlReaderTest : BaseTestWithVkApiHost() {
     fun readAsText() {
         val urlReader = UrlReader()
         val response = urlReader.readAsText(
-            URL("https://$host:$port/method/newsfeed.search?q=1&start_time=1633814137&end_time=1633900537&v=5.131&access_token=$accessToken")
+            URL("https://$host:$port/method/newsfeed.search?q=1&start_time=1633814137&end_time=1633900537&v=$version&access_token=$accessToken")
         )
         Assert.assertTrue(response.isNotEmpty())
     }

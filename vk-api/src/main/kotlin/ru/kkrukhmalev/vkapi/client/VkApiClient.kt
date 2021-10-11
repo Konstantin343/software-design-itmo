@@ -10,7 +10,7 @@ open class VkApiClient(
     private val host: String,
     private val port: Int,
     private val accessToken: String,
-    private val version: String = "5.131",
+    private val version: String,
 ) {
     companion object {
         const val NEWSFEED_SEARCH = "newsfeed.search"

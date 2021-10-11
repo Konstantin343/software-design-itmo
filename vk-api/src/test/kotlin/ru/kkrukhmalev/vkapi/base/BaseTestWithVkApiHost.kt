@@ -19,6 +19,9 @@ abstract class BaseTestWithVkApiHost {
     protected val port: Int
         get() = properties.getProperty("vkapi.port").toInt()
     
+    protected val version: String
+        get() = properties.getProperty("vkapi.version")
+    
     protected val accessToken: String
         get() = properties.getProperty("vkapi.access.token")
 

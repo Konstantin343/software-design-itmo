@@ -15,5 +15,5 @@ class VkApiClientIntegrationTest : BaseTestWithVkApiHost() {
     }
 
     private fun createVkApiClient() =
-        VkApiClient(host, port, accessToken)
+        VkApiClient(host, port, accessToken, version)
 }
