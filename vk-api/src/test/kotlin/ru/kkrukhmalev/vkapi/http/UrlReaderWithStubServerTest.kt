@@ -18,16 +18,25 @@ class UrlReaderWithStubServerTest {
     private val urlReader = TextUrlReader()
     
     private val url: URL
-        get() = URL("http://localhost:$port/ping")
+        get() = URL("http://localhost:$port/posts")
 
     @Test
     fun readAsTextMultiline() {
+        val json = """
+            {
+                "response": {
+                "items": [],
+                "count": 0,
+                "total_count": 0
+                }
+            }"""
+        
         withStubServer(port) {
             whenHttp(this)
-                .match(method(Method.GET), startsWithUri("/ping"))
-                .then(stringContent("pong  \n  pong"))
+                .match(method(Method.GET), startsWithUri("/posts"))
+                .then(stringContent(json))
             val result = urlReader.read(url)
-            Assert.assertEquals(result, "pong  \n  pong\n")
+            Assert.assertEquals(result, json + "\n")
         }
     }
 
@@ -36,7 +45,7 @@ class UrlReaderWithStubServerTest {
         Assert.assertThrows(UncheckedIOException::class.java) {
             withStubServer(port) { 
                 whenHttp(this)
-                    .match(method(Method.GET), startsWithUri("/ping"))
+                    .match(method(Method.GET), startsWithUri("/posts"))
                     .then(status(HttpStatus.NOT_FOUND_404))
                 urlReader.read(url)
             }
