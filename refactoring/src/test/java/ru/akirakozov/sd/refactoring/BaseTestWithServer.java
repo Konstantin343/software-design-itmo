@@ -25,12 +25,12 @@ public abstract class BaseTestWithServer {
         });
     }
 
-    @AfterClass
+    @AfterClass(alwaysRun = true)
     public void stopServer() {
         serverExecutor.shutdown();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void cleanDatabase() {
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:test.db")) {
             Statement statement = connection.createStatement();
