@@ -18,18 +18,16 @@ import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
  */
 public class ProductsServer {
     private final String databaseConnectionString;
-    private final int port;
+    private final Server server;
 
     public ProductsServer(int port, String databaseConnectionString) {
-        this.port = port;
+        this.server = new Server(port);
         this.databaseConnectionString = databaseConnectionString;
     }
 
     public void start() throws Exception {
         try (ProductsManager productsManager = new ProductsDatabaseManager(databaseConnectionString)) {
             productsManager.createProducts();
-
-            Server server = new Server(port);
 
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
@@ -44,5 +42,9 @@ public class ProductsServer {
             server.start();
             server.join();
         }
+    }
+    
+    public void stop() throws Exception {
+        server.stop();
     }
 }
