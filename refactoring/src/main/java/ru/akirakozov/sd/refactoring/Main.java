@@ -7,6 +7,9 @@ import ru.akirakozov.sd.refactoring.server.ProductsServer;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new ProductsServer(8081, "jdbc:sqlite:test.db").start();
+        int port = args.length >= 1 ? Integer.parseInt(args[0]) : 8081;
+        String databaseConnectionString = args.length >= 2 ? args[1] : "jdbc:sqlite:test.db";
+        
+        new ProductsServer(port, databaseConnectionString).start();
     }
 }
