@@ -1,23 +1,15 @@
-package ru.akirakozov.sd.refactoring;
+package ru.akirakozov.sd.refactoring.server;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.akirakozov.sd.refactoring.base.BaseTestWithServer;
+import ru.akirakozov.sd.refactoring.base.HttpClientWithRetries;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class HttpRequestsTest extends BaseTestWithServer {
-    private final static String HOST = "localhost";
-    private final static int PORT = 8081;
-
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+public class ProductsServerTest extends BaseTestWithServer {
+    private final HttpClientWithRetries httpClient = new HttpClientWithRetries(3, 1000);
 
     @Test
     public void addOneProduct() {
@@ -91,21 +83,6 @@ public class HttpRequestsTest extends BaseTestWithServer {
     }
 
     private String sendRequest(String method, Map<String, Object> params) {
-        String paramsString = params.entrySet().stream()
-                .map(e -> e.getKey() + "=" + e.getValue())
-                .collect(Collectors.joining("&"));
-        String uriContent = "http://" + HOST + ":" + PORT + "/" + method + (params.isEmpty() ? "" : "?" + paramsString);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uriContent))
-                .build();
-        while (true) {
-            try {
-                return httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            } catch (ConnectException ignored) {
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-                return "";
-            }
-        }
+        return httpClient.sendGetRequest(HOST, PORT, method, params);
     }
 }
