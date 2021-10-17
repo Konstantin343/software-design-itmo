@@ -7,6 +7,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Konstantin343
+ * 
+ * Implementation of {@link ProductsManager} that uses SQL database as product store
+ */
 public class ProductsDatabaseManager implements ProductsManager {
     private final Connection connection;
 
@@ -40,7 +45,7 @@ public class ProductsDatabaseManager implements ProductsManager {
     }
 
     @Override
-    public Product maxPrice() {
+    public Product maxPriceProduct() {
         return executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", resultSet -> {
             resultSet.next();
             return parseProduct(resultSet);
@@ -48,7 +53,7 @@ public class ProductsDatabaseManager implements ProductsManager {
     }
 
     @Override
-    public Product minPrice() {
+    public Product minPriceProduct() {
         return executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", resultSet -> {
             resultSet.next();
             return parseProduct(resultSet);

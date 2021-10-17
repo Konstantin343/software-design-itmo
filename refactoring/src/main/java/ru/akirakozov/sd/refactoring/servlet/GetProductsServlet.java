@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author akirakozov
+ * @author Konstantin343
  */
 public class GetProductsServlet extends BaseProductsServlet {
 

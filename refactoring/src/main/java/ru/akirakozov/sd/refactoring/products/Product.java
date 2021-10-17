@@ -1,5 +1,10 @@
 package ru.akirakozov.sd.refactoring.products;
 
+/**
+ * @author Konstantin343
+ * 
+ * Class for storing information about project
+ */
 public class Product {
     private final String name;
     

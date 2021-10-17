@@ -5,6 +5,11 @@ import ru.akirakozov.sd.refactoring.products.Product;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * @author Konstantin343
+ * 
+ * Implementation of {@link ProductsHtmlBuilder} for building simple HTML responses
+ */
 public class SimpleProductsHtmlBuilder implements ProductsHtmlBuilder {
     @Override
     public void buildProductsListHtml(List<Product> products, PrintWriter writer) {

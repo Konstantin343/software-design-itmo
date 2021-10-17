@@ -6,6 +6,9 @@ import ru.akirakozov.sd.refactoring.products.ProductsManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * @author Konstantin343
+ */
 public abstract class BaseProductsServlet extends HttpServlet {
     protected final ProductsHtmlBuilder htmlBuilder;
     protected final ProductsManager productsManager;

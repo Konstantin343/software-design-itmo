@@ -11,6 +11,11 @@ import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
 import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
 import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
 
+/**
+ * @author Konstantin343
+ * 
+ * Server of Products Web App that inject dependencies, set up and start application
+ */
 public class ProductsServer {
     private final String databaseConnectionString;
     private final int port;

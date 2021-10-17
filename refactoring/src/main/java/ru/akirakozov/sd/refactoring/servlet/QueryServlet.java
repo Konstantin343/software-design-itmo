@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author akirakozov
+ * @author Konstantin343
  */
 public class QueryServlet extends BaseProductsServlet {
     public QueryServlet(ProductsManager manager, ProductsHtmlBuilder htmlBuilder) {
@@ -20,9 +20,9 @@ public class QueryServlet extends BaseProductsServlet {
         String command = request.getParameter("command");
 
         if ("max".equals(command)) {
-            htmlBuilder.buildMaxPriceHtml(productsManager.maxPrice(), response.getWriter());
+            htmlBuilder.buildMaxPriceHtml(productsManager.maxPriceProduct(), response.getWriter());
         } else if ("min".equals(command)) {
-            htmlBuilder.buildMinPriceHtml(productsManager.minPrice(), response.getWriter());
+            htmlBuilder.buildMinPriceHtml(productsManager.minPriceProduct(), response.getWriter());
         } else if ("sum".equals(command)) {
             htmlBuilder.buildSumPriceHtml(productsManager.sumPrice(), response.getWriter());
         } else if ("count".equals(command)) {

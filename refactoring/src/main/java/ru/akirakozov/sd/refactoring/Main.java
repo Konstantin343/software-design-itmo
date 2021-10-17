@@ -3,7 +3,10 @@ package ru.akirakozov.sd.refactoring;
 import ru.akirakozov.sd.refactoring.server.ProductsServer;
 
 /**
- * @author akirakozov
+ * @author Konstantin343
+ * 
+ * Main class for starting application
+ * Usage: java <app-path> [port [dbConnectionString]] 
  */
 public class Main {
     public static void main(String[] args) throws Exception {
