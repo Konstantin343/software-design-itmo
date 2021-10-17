@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.database.ProductsDatabaseManager;
+import ru.akirakozov.sd.refactoring.html.ProductsHtmlBuilder;
 import ru.akirakozov.sd.refactoring.products.Product;
 import ru.akirakozov.sd.refactoring.products.ProductsManager;
 
@@ -12,61 +13,32 @@ import java.io.IOException;
 /**
  * @author akirakozov
  */
-public class QueryServlet extends HttpServlet {
+public class QueryServlet extends BaseProductsServlet {
+    public QueryServlet(ProductsHtmlBuilder htmlBuilder) {
+        super(htmlBuilder);
+    }
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         String command = request.getParameter("command");
 
-        if ("max".equals(command)) {
-            try (ProductsManager productsManager = new ProductsDatabaseManager("jdbc:sqlite:test.db")) {
-                response.getWriter().println("<html><body>");
-                response.getWriter().println("<h1>Product with max price: </h1>");
-                Product product = productsManager.maxPrice();
-                response.getWriter().println(product.getName() + "\t" + product.getPrice() + "</br>");
-                response.getWriter().println("</body></html>");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        try (ProductsManager productsManager = new ProductsDatabaseManager("jdbc:sqlite:test.db")) {
+            if ("max".equals(command)) {
+                htmlBuilder.buildMaxPriceHtml(productsManager.maxPrice(), response.getWriter());
+            } else if ("min".equals(command)) {
+                htmlBuilder.buildMinPriceHtml(productsManager.minPrice(), response.getWriter());
+            } else if ("sum".equals(command)) {
+                htmlBuilder.buildSumPriceHtml(productsManager.sumPrice(), response.getWriter());
+            } else if ("count".equals(command)) {
+                htmlBuilder.buildCountProductsHtml(productsManager.countProducts(), response.getWriter());
+            } else {
+                htmlBuilder.buildUnknownCommandHtml(command, response.getWriter());
             }
-        } else if ("min".equals(command)) {
-            try (ProductsManager productsManager = new ProductsDatabaseManager("jdbc:sqlite:test.db")) {
-                response.getWriter().println("<html><body>");
-                response.getWriter().println("<h1>Product with min price: </h1>");
-                Product product = productsManager.minPrice();
-                response.getWriter().println(product.getName() + "\t" + product.getPrice() + "</br>");
-                response.getWriter().println("</body></html>");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else if ("sum".equals(command)) {
-            try (ProductsManager productsManager = new ProductsDatabaseManager("jdbc:sqlite:test.db")) {
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("Summary price: ");
-                    Long sum = productsManager.sumPrice();
-                    if (sum != null) {
-                        response.getWriter().println(sum);
-                    }
-                    response.getWriter().println("</body></html>");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else if ("count".equals(command)) {
-            try (ProductsDatabaseManager database = new ProductsDatabaseManager("jdbc:sqlite:test.db")) {
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("Number of products: ");
-                    Integer count = database.countProducts();
-                    if (count != null) {
-                        response.getWriter().println(count);
-                    }
-                    response.getWriter().println("</body></html>");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            response.getWriter().println("Unknown command: " + command);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
+        setOkHtmlResponse(response);
     }
 
 }

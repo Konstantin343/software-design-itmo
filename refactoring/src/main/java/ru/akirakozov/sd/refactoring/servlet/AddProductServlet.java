@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.database.ProductsDatabaseManager;
+import ru.akirakozov.sd.refactoring.html.ProductsHtmlBuilder;
 import ru.akirakozov.sd.refactoring.products.Product;
 import ru.akirakozov.sd.refactoring.products.ProductsManager;
 
@@ -12,7 +13,11 @@ import java.io.IOException;
 /**
  * @author akirakozov
  */
-public class AddProductServlet extends HttpServlet {
+public class AddProductServlet extends BaseProductsServlet {
+
+    public AddProductServlet(ProductsHtmlBuilder htmlBuilder) {
+        super(htmlBuilder);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -27,8 +32,7 @@ public class AddProductServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("OK");
+        htmlBuilder.buildAddProductHtml(product, response.getWriter());
+        setOkHtmlResponse(response);
     }
 }
