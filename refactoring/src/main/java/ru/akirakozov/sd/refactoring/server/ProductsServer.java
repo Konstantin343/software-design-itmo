@@ -19,25 +19,25 @@ public class ProductsServer {
         this.port = port;
         this.databaseConnectionString = databaseConnectionString;
     }
-    
+
     public void start() throws Exception {
         try (ProductsManager productsManager = new ProductsDatabaseManager(databaseConnectionString)) {
             productsManager.createProducts();
+
+            Server server = new Server(port);
+
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
+
+            ProductsHtmlBuilder htmlBuilder = new SimpleProductsHtmlBuilder();
+
+            context.addServlet(new ServletHolder(new AddProductServlet(productsManager, htmlBuilder)), "/add-product");
+            context.addServlet(new ServletHolder(new GetProductsServlet(productsManager, htmlBuilder)), "/get-products");
+            context.addServlet(new ServletHolder(new QueryServlet(productsManager, htmlBuilder)), "/query");
+
+            server.start();
+            server.join();
         }
-
-        Server server = new Server(port);
-
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-
-        ProductsHtmlBuilder htmlBuilder = new SimpleProductsHtmlBuilder();
-
-        context.addServlet(new ServletHolder(new AddProductServlet(htmlBuilder)), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet(htmlBuilder)), "/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet(htmlBuilder)), "/query");
-
-        server.start();
-        server.join();
     }
 }

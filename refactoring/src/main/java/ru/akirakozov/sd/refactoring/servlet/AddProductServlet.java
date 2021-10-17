@@ -15,8 +15,8 @@ import java.io.IOException;
  */
 public class AddProductServlet extends BaseProductsServlet {
 
-    public AddProductServlet(ProductsHtmlBuilder htmlBuilder) {
-        super(htmlBuilder);
+    public AddProductServlet(ProductsManager manager, ProductsHtmlBuilder htmlBuilder) {
+        super(manager, htmlBuilder);
     }
 
     @Override
@@ -26,11 +26,7 @@ public class AddProductServlet extends BaseProductsServlet {
                 Long.parseLong(request.getParameter("price"))
         );
 
-        try (ProductsManager productsManager = new ProductsDatabaseManager("jdbc:sqlite:test.db")) {
-            productsManager.addProduct(product);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        productsManager.addProduct(product);
 
         htmlBuilder.buildAddProductHtml(product, response.getWriter());
         setOkHtmlResponse(response);

@@ -14,17 +14,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class GetProductsServlet extends BaseProductsServlet {
 
-    public GetProductsServlet(ProductsHtmlBuilder htmlBuilder) {
-        super(htmlBuilder);
+    public GetProductsServlet(ProductsManager productsManager, ProductsHtmlBuilder htmlBuilder) {
+        super(productsManager, htmlBuilder);
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (ProductsManager productManager = new ProductsDatabaseManager("jdbc:sqlite:test.db")) {
-            htmlBuilder.buildProductsListHtml(productManager.getProducts(), response.getWriter());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        htmlBuilder.buildProductsListHtml(productsManager.getProducts(), response.getWriter());
+            
         setOkHtmlResponse(response);
     }
 }
