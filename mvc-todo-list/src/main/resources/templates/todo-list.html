@@ -1,0 +1,58 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <title th:text="'TODOs from ' + ${todoList.title}"></title>
+</head>
+<body>
+
+<div style="margin: 0; display: inline-block">
+    <h3 style="margin: 0; display: inline-block" th:text="'TODOs from ' + ${todoList.title}"></h3>
+    <form style="margin: 0; display: inline-block" method="GET" action="/todo-lists">
+        <input type="submit" th:value="Back">
+    </form>
+</div>
+
+<div>
+    <th:block th:each="todo : ${todos}">
+        <div th:style="'margin-top: 10px; border-width: ' + ${todo.done ? '3px' : '1px'} 
+            + '; border-color: ' + ${todo.done ? 'green' : 'black'} + '; border-style: solid; max-width: 320px; padding: 2px;'">
+            <div style="margin: 0; display: inline-block">
+                <h4 style="margin: 0; display: inline-block" th:text="${todo.title}"></h4>
+                <form style="margin: 0; display: inline-block" method="POST" action="/todo-done">
+                    <input type="submit" th:value="${todo.done ? 'Not done' : 'Done'}">
+                    <input type="hidden" name="id" th:value="${todo.id}">
+                    <input type="hidden" name="listId" th:value="${todo.listId}">
+                    <input type="hidden" name="done" th:value="${!todo.done}">
+                </form>
+
+                <form style="margin: 0; display: inline-block" method="POST" action="/delete-todo">
+                    <input type="submit" value="Delete">
+                    <input type="hidden" name="id" th:value="${todo.id}">
+                    <input type="hidden" name="listId" th:value="${todo.listId}">
+                </form>
+            </div>
+            <div style="max-width: 300px" th:text="${todo.description}"></div>
+        </div>
+    </th:block>
+</div>
+
+<h3>Add new TODO</h3>
+<form th:object="${todo}" method="POST" action="/add-todo">
+    <table>
+        <tr>
+            <td><label for="title">Title:</label></td>
+            <td><input required="required" id="title" type="text" th:field="*{title}"/></td>
+        </tr>
+        <tr>
+            <td><label for="description">Description:</label></td>
+            <td><textarea id="description" th:field="*{description}"></textarea></td>
+        </tr>
+    </table>
+    <input type="hidden" name="listId" th:value="${todoList.id}">
+    <input type="hidden" th:field="*{done}" th:value="false">
+
+    <input type="submit" value="Add">
+</form>
+
+</body>
+</html>

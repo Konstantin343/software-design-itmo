@@ -1,0 +1,44 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <title>TODO Lists</title>
+</head>
+<body>
+
+<h3>TODO lists</h3>
+
+<div>
+    <th:block th:each="todoList : ${todoLists}">
+        <div style="margin-top: 10px; border-width: 1px; border-style: solid; max-width: 320px; padding: 2px">
+            <div style="margin: 0; display: inline-block">
+                <h4 style="margin: 0; display: inline-block">
+                    <a th:href="'/todo-list?listId=' + ${todoList.id}" th:text="${todoList.title}"></a>
+                </h4>
+                <form style="margin: 0; display: inline-block" method="POST" action="/delete-todo-list">
+                    <input type="submit" value="Delete">
+                    <input type="hidden" name="id" th:value="${todoList.id}">
+                </form>
+            </div>
+            <div style="max-width: 300px" th:text="${todoList.description}"></div>
+        </div>
+    </th:block>
+</div>
+
+<h3>Add new TODO list</h3>
+<form th:object="${todoList}" method="POST" action="/add-todo-list">
+    <table>
+        <tr>
+            <td><label for="title">Title:</label></td>
+            <td><input required="required" id="title" type="text" th:field="*{title}"/></td>
+        </tr>
+        <tr>
+            <td><label for="description">Description:</label></td>
+            <td><textarea id="description" th:field="*{description}"></textarea></td>
+        </tr>
+    </table>
+
+    <input type="submit" value="add">
+</form>
+
+</body>
+</html>
