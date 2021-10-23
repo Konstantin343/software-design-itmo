@@ -18,7 +18,12 @@ class TodoController(private var todoDao: TodoDao) {
 
     @GetMapping("/todo-lists")
     fun todoLists(map: ModelMap): String {
-        map.addAttribute("todoLists", todoDao.getTodoLists())
+        val todoLists = todoDao.getTodoLists()
+        val todos = todoLists.associate { it.id to todoDao.getTodos(it.id) }
+        map.addAttribute("todoLists", todoLists)
+        map.addAttribute("sizes", todos.map { it.key to it.value.size }.toMap())
+        map.addAttribute("dones",
+            todos.map { it.key to (it.value.all { td -> td.done } && it.value.isNotEmpty()) }.toMap())
         map.addAttribute("todoList", TodoList())
         return "index"
     }

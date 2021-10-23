@@ -5,26 +5,28 @@
 </head>
 <body>
 
-<h3>TODO lists</h3>
+<h2>TODO lists</h2>
 
 <div>
     <th:block th:each="todoList : ${todoLists}">
-        <div style="margin-top: 10px; border-width: 1px; border-style: solid; max-width: 320px; padding: 2px">
+        <div th:style="'margin-top: 10px; border-width: ' + ${dones[todoList.id] ? '3px' : '1px'} 
+            + '; border-color: ' + ${dones[todoList.id] ? 'green' : 'black'} + '; border-style: solid; max-width: 320px; padding: 2px;'">
             <div style="margin: 0; display: inline-block">
-                <h4 style="margin: 0; display: inline-block">
+                <h3 style="margin: 0; display: inline-block">
                     <a th:href="'/todo-list?listId=' + ${todoList.id}" th:text="${todoList.title}"></a>
-                </h4>
-                <form style="margin: 0; display: inline-block" method="POST" action="/delete-todo-list">
-                    <input type="submit" value="Delete">
-                    <input type="hidden" name="id" th:value="${todoList.id}">
-                </form>
+                </h3>
+                <div style="margin: 0; display: inline-block" th:text="' (' + ${sizes[todoList.id]} + ' TODOs)'"></div>
             </div>
             <div style="max-width: 300px" th:text="${todoList.description}"></div>
+            <form style="margin: 0; display: inline-block" method="POST" action="/delete-todo-list">
+                <input type="submit" value="Delete">
+                <input type="hidden" name="id" th:value="${todoList.id}">
+            </form>
         </div>
     </th:block>
 </div>
 
-<h3>Add new TODO list</h3>
+<h2>Add new TODO list</h2>
 <form th:object="${todoList}" method="POST" action="/add-todo-list">
     <table>
         <tr>
