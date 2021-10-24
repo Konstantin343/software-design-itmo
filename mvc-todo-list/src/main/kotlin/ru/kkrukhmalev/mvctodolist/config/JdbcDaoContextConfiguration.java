@@ -7,6 +7,8 @@ import ru.kkrukhmalev.mvctodolist.dao.TodoDao;
 import ru.kkrukhmalev.mvctodolist.dao.TodoJdbcDao;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author akirakozov
@@ -19,12 +21,14 @@ public class JdbcDaoContextConfiguration {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource() throws IOException {
+        Properties properties = new Properties();
+        properties.load(this.getClass().getClassLoader().getResourceAsStream("database.properties"));
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.sqlite.JDBC");
-        dataSource.setUrl("jdbc:sqlite:todo.db");
-        dataSource.setUsername("");
-        dataSource.setPassword("");
+        dataSource.setDriverClassName(properties.getProperty("database.driver"));
+        dataSource.setUrl(properties.getProperty("database.url"));
+        dataSource.setUsername(properties.getProperty("database.user"));
+        dataSource.setPassword(properties.getProperty("database.password"));
         return dataSource;
     }
 }
