@@ -9,7 +9,7 @@ class TodoInMemoryDao : TodoDao {
     private val lastTodoListId = AtomicInteger(0)
     private val todoLists = mutableListOf<TodoList>()
     private val todos = mutableListOf<Todo>()
-    
+
     override fun addTodo(todo: Todo): Int {
         todo.id = lastTodoId.incrementAndGet()
         todos.add(todo)
@@ -27,6 +27,8 @@ class TodoInMemoryDao : TodoDao {
     }
 
     override fun getTodoLists() = todoLists.toList()
+    
+    override fun getTodos() = todos.toList()
 
     override fun getTodos(listId: Int) = todos.filter { it.listId == listId }.toList()
 
@@ -36,6 +38,10 @@ class TodoInMemoryDao : TodoDao {
 
     override fun removeTodo(todoId: Int) {
         todos.removeIf { it.id == todoId }
+    }
+
+    override fun removeTodos(listId: Int) {
+        todos.removeIf { it.listId == listId }
     }
 
     override fun removeList(listId: Int) {

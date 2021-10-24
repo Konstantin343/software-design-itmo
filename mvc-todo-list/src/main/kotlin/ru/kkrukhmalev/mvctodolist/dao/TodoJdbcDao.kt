@@ -32,6 +32,11 @@ class TodoJdbcDao(dataSource: DataSource): TodoDao, JdbcDaoSupport() {
         return jdbcTemplate!!.query(sql, BeanPropertyRowMapper(TodoList::class.java))
     }
 
+    override fun getTodos(): List<Todo> {
+        val sql = "SELECT * FROM TODOS"
+        return jdbcTemplate!!.query(sql, BeanPropertyRowMapper(Todo::class.java))
+    }
+
     override fun getTodos(listId: Int): List<Todo> {
         val sql = "SELECT * FROM TODOS WHERE listId = $listId"
         return jdbcTemplate!!.query(sql, BeanPropertyRowMapper(Todo::class.java))
@@ -47,10 +52,13 @@ class TodoJdbcDao(dataSource: DataSource): TodoDao, JdbcDaoSupport() {
         jdbcTemplate!!.update(sql, todoId)
     }
 
+    override fun removeTodos(listId: Int) {
+        val sql = "DELETE FROM TODOS WHERE listId = ?"
+        jdbcTemplate!!.update(sql, listId)
+    }
+
     override fun removeList(listId: Int) {
         val sql = "DELETE FROM TODOLISTS WHERE id = ?"
         jdbcTemplate!!.update(sql, listId)
-        for (todo in getTodos(listId)) 
-            removeTodo(todo.id)
     }
 }

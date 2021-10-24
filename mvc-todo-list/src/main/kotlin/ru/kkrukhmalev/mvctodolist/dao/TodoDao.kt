@@ -12,11 +12,15 @@ interface TodoDao {
 
     fun getTodoLists(): List<TodoList>
 
+    fun getTodos(): List<Todo>
+    
     fun getTodos(listId: Int): List<Todo>
 
     fun changeTodoStatus(todoId: Int, done: Boolean)
 
     fun removeTodo(todoId: Int)
+    
+    fun removeTodos(listId: Int)
 
     fun removeList(listId: Int)
 }

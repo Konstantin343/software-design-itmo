@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import ru.kkrukhmalev.mvctodolist.dao.TodoDao
+import ru.kkrukhmalev.mvctodolist.logic.TodoManager
 import ru.kkrukhmalev.mvctodolist.model.Todo
 import ru.kkrukhmalev.mvctodolist.model.TodoList
 
@@ -19,11 +20,11 @@ class TodoController(private var todoDao: TodoDao) {
     @GetMapping("/todo-lists")
     fun todoLists(map: ModelMap): String {
         val todoLists = todoDao.getTodoLists()
-        val todos = todoLists.associate { it.id to todoDao.getTodos(it.id) }
+        val todos = todoDao.getTodos()
+        val (sizes, dones) = TodoManager.groupTodosInfoByLists(todoLists, todos)
         map.addAttribute("todoLists", todoLists)
-        map.addAttribute("sizes", todos.map { it.key to it.value.size }.toMap())
-        map.addAttribute("dones",
-            todos.map { it.key to (it.value.all { td -> td.done } && it.value.isNotEmpty()) }.toMap())
+        map.addAttribute("sizes", sizes)
+        map.addAttribute("dones", dones)
         map.addAttribute("todoList", TodoList())
         return "index"
     }
@@ -50,6 +51,7 @@ class TodoController(private var todoDao: TodoDao) {
 
     @PostMapping("/delete-todo-list")
     fun deleteTodoList(@ModelAttribute("id") id: Int): String {
+        todoDao.removeTodos(id)
         todoDao.removeList(id)
         return "redirect:/todo-lists"
     }
