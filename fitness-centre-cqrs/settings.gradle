@@ -1,0 +1,5 @@
+rootProject.name = 'fitness-centre-cqrs'
+include 'manager-service'
+include 'report-service'
+include 'turnstile-service'
+include 'common'
