@@ -1,25 +1,19 @@
 package ru.kkrukhmalev.stockMarket.account.tests
 
 import io.ktor.http.*
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.images.builder.ImageFromDockerfile
 import ru.kkrukhmalev.stockMarket.account.PersonalAccount
-import ru.kkrukhmalev.stockMarket.http.request
 import ru.kkrukhmalev.stockMarket.repository.MongoStockRepository
 import ru.kkrukhmalev.stockMarket.repository.StockRepository
-import java.nio.file.Path
 import java.time.Duration
 import kotlin.math.abs
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class Tests {
+class PersonalAccountTests {
     companion object {
         const val STOCK_MARKET_PORT = 9090
         const val DB_PORT = 9091
@@ -32,10 +26,6 @@ class Tests {
     private val mongoDbContainer = MongoDBContainer(MONGO_DOCKER_IMAGE).apply {
         portBindings = listOf("$DB_PORT:27017")
     }
-
-    private operator fun Path.div(other: String) = this.resolve(other)
-
-    private operator fun String.div(other: String) = Path.of(this).resolve(other)
 
     private val image = ImageFromDockerfile().withDockerfile(".." / "Dockerfile")
     private val stockMarketContainer = GenericContainer(image)
@@ -68,32 +58,6 @@ class Tests {
     fun clearDatabase() {
         stockRepository.clearAll()
     }
-
-    object StockMarketTestApi {
-        private fun request(uri: String, vararg parameters: Pair<String, Any>) =
-            request("localhost:$STOCK_MARKET_PORT", uri, *parameters)
-
-        fun addCompany(name: String, startPrice: Double) = request(
-            "/companies/add",
-            "company" to name,
-            "startPrice" to startPrice
-        )
-
-        fun getCompany(name: String) = request(
-            "/companies/get",
-            "company" to name
-        )
-
-        fun addStocks(name: String, count: Int) = request(
-            "/stocks/add",
-            "company" to name,
-            "count" to count
-        )
-    }
-    
-    private fun parsePrice(companyString: String) = ".*price=(.+?)\\).*".toRegex()
-        .matchEntire(companyString)!!
-        .groupValues[1].toDouble()
 
     @Test
     fun buyStocks() {
@@ -196,4 +160,8 @@ class Tests {
             abs(50000.0 + (price12 - price11) * 10.0 + (price22 - price21) * 10.0 - sumMoney) < 0.01
         )
     }
+
+    private fun parsePrice(companyString: String) = ".*price=(.+?)\\).*".toRegex()
+        .matchEntire(companyString)!!
+        .groupValues[1].toDouble()
 }
